@@ -4,7 +4,8 @@
 using NIfTI
 using ImageTransformations, CoordinateTransformations, Interpolations
 
-# Round to an integer and replace NaN, Inf with 0 if the second argument is an integer type
+# Round to an integer and replace NaN, Inf (and negative values) with 0 if the second argument is of (unsigned) integer type
+mayberound{T<:Unsigned}(x, ::Type{T}) = (x ≥ 0) && isfinite(x) ? round(T, x) : 0
 mayberound{T<:Integer}(x, ::Type{T}) = isfinite(x) ? round(T, x) : 0
 mayberound(x, ::DataType) = x
 
