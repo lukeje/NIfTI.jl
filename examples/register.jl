@@ -4,8 +4,8 @@
 using NIfTI
 using ImageTransformations, CoordinateTransformations, Interpolations
 
-# Round to an integer if the second argument is an integer type
-mayberound{T<:Integer}(x, ::Type{T}) = round(T, x)
+# Round to an integer and replace NaN, Inf with 0 if the second argument is an integer type
+mayberound{T<:Integer}(x, ::Type{T}) = isfinite(x) ? round(T, x) : 0
 mayberound(x, ::DataType) = x
 
 function apply_rotation!(out, A, data)
@@ -19,8 +19,6 @@ end
 convertToMap(a) = Translation(a[1:3,4]) ∘ LinearMap(a[1:3,1:3]) ∘ Translation([-1, -1, -1])
 
 function register{T<:FloatingPoint}(targ::NIVolume, mov::NIVolume{T}, outtype::DataType=T)
-
-
     # Construct the affine matrix that maps voxels of targ to voxels of
     # mov
     targaffine = getaffine(targ.header)
