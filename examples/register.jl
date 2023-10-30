@@ -27,7 +27,7 @@ function register{T<:FloatingPoint}(targ::NIVolume, mov::NIVolume{T}, outtype::D
     A = inv(convertToMap(movaffine)) ∘ convertToMap(targaffine)
 
     # Allocate output
-    out = zeros(outtype, size(targ, 1), size(targ, 2), size(targ, 3), size(mov, 4))
+    out = zeros(outtype, size(targ)[1:3]..., size(mov)[4:end]...))
 
     # Perform rotation
     apply_rotation!(out, A, mov.raw)
